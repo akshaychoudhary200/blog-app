@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import {
   View,
   Text,
@@ -13,7 +13,20 @@ import { Feather } from "@expo/vector-icons";
 
 const IndexScreen = ({ navigation }) => {
   // const blogPosts = useContext(BlogContext);
-  const { state, deleteBlogPost } = useContext(Context);
+  const { state, deleteBlogPost, getBlogPost } = useContext(Context);
+  useEffect(() => {
+    //  fetch first time when index is loaded
+    getBlogPost();
+    // fetch again when we return to screen
+    const listener = navigation.addListener("didFocus", () => {
+      getBlogPost();
+    });
+
+    // if index is completely removed then only this function will run
+    return () => {
+      listener.remove();
+    };
+  }, []);
   return (
     <View>
       <FlatList
